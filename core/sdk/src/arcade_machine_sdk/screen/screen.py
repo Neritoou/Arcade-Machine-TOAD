@@ -1,6 +1,6 @@
 import pygame
-from ..constants import BASE_RESOLUTION, DEFAULT_FPS
-from .screen_context import ScreenContext
+from arcade_machine_sdk.constants import BASE_RESOLUTION, DEFAULT_FPS
+from screen_context import ScreenContext
 
 class Screen:
     def __init__(self,title: str, icon_path: str) -> None:

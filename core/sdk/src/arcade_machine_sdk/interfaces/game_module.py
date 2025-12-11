@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List
-from ...src.utils.json import load_json
-from ..screen import ScreenContext
+from arcade_machine_sdk.screen import ScreenContext
 import pygame
 
 class GameModule(ABC):
