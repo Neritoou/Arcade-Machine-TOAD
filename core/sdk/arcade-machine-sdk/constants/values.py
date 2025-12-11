@@ -1,0 +1,8 @@
+# Resolución por defecto
+BASE_WIDTH = 1280
+BASE_HEIGHT = 1024
+BASE_RESOLUTION = (BASE_WIDTH, BASE_HEIGHT)
+
+# FPS por defecto
+DEFAULT_FPS = 60
+MIN_FPS = 30
