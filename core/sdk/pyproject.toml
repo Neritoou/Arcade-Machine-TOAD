@@ -6,23 +6,12 @@ build-backend = "setuptools.build_meta"
 name = "arcade-machine-sdk"
 version = "1.0.0"
 description = "SDK oficial para crear juegos compatibles con el Arcade Machine Core."
-authors = [
-    { name = "Neritoou" }
-]
+authors = [{ name = "Neritoou" }]
 license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.10"
-
 dependencies = []
 
 [project.urls]
 Homepage = "https://github.com/Neritoou/arcade-machine-sdk"
 Repository = "https://github.com/Neritoou/arcade-machine-sdk"
-
-[tool.setuptools]
-packages = [
-    "arcade_machine_sdk",
-    "arcade_machine_sdk.interfaces",
-    "arcade_machine_sdk.screen",
-    "arcade_machine_sdk.constants"
-]
