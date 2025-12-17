@@ -1,9 +1,0 @@
-{
-    "title": "Nombre de Ejemplo",
-    "description": "Se trata de un juego de ejemplo para demostrar la estructura del archivo JSON.", 
-    "release_date": "24/05/2006",
-    "tags": ["Aventura", "Acción"],
-    "group": "1",
-    "authors": ["Pedrito", "Pablito"]
-}
-

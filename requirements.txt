@@ -1,2 +1,2 @@
 pygame
-setuptools
+arcade-machine-sdk
