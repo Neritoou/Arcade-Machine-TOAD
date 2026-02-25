@@ -1,7 +1,7 @@
 import pygame
 from typing import TYPE_CHECKING
 from .game_selector import GameSelector
-from .paths import get_asset
+from ..util.paths import get_asset
 
 # Esto es para evitar la dependencia circular
 if TYPE_CHECKING:
@@ -14,6 +14,7 @@ _START_X  = 354
 _START_Y  = 305
 _PANEL_X = 57
 _PANEL_Y = 550
+_SCROLL_DELAY= 0.4
 
 class GameList:
     def __init__(self, engine: "ArcadeEngine") -> None:
@@ -24,7 +25,7 @@ class GameList:
         self._button_normal = pygame.image.load(str(get_asset("images","button_normal.png"))).convert_alpha()
         self._button_hover = pygame.image.load(str(get_asset("images","button_hover.png"))).convert_alpha()
 
-        self._label_unassigned = self._engine.font_arcade.render("NO   ASIGNED", True, (100, 100, 100))
+        self._label_unassigned = self._engine.font_arcade.render("UNASSIGNED", True, (100, 100, 100))
         self._labels_normal:   list[pygame.Surface] = []
         self._labels_selected: list[pygame.Surface] = []
         self._panel_surfs: list[list[pygame.Surface]] = []
@@ -32,8 +33,13 @@ class GameList:
         
         self._marquee_offset = 0.0   # posición X actual del scroll
         self._marquee_speed  = 90    # píxeles por segundo
+        self._timer_scroll = 0.0     # Timer para el tiempo tarda en empezar a moverse al seleccionar
 
     def update(self, dt: float) -> None:
+        self._timer_scroll += dt
+        if self._timer_scroll < _SCROLL_DELAY:
+            return
+
         self._marquee_offset += self._marquee_speed * dt
 
         btn_w   = self._button_normal.get_width()
@@ -115,6 +121,7 @@ class GameList:
 
     def _on_move(self, moved: bool) -> None:
         if moved:
+            self._timer_scroll = 0.0
             self._marquee_offset = 0.0
             self._engine.snd_navigate.play()
         else:
@@ -126,7 +133,6 @@ class GameList:
             self._labels_normal.append(self._engine.font_arcade.render(title, True, (255, 255, 255)))
             self._labels_selected.append(self._engine.font_arcade.render(title, True, (225, 168, 240)))
             lines = [
-                meta.title,
                 f"Grupo: {meta.group_number}",
                 "Integrantes:",
                 *[f"    - {author}" for author in meta.authors]
