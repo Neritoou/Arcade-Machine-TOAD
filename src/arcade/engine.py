@@ -1,7 +1,7 @@
 from .component import GameList
 from registry import GameRegistry
 from arcade_machine_sdk import BASE_RESOLUTION, DEFAULT_FPS, GameBase
-from .component.paths import get_asset
+from .util.paths import get_asset
 import pygame
 
 class ArcadeEngine:
