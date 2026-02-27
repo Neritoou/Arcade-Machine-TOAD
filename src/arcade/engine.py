@@ -3,9 +3,11 @@ from registry import GameRegistry
 from arcade_machine_sdk import BASE_RESOLUTION, DEFAULT_FPS, GameBase
 from .util.paths import get_asset
 import pygame
+import os
 
 class ArcadeEngine:
     def __init__(self, launcher_title: str, game_registry: GameRegistry) -> None:
+        self.working_directory = os.getcwd()
         self.games = game_registry
         self.launcher_title = launcher_title
         self.__running = True
@@ -92,6 +94,7 @@ class ArcadeEngine:
                 self.__current_game = None
                 pygame.mixer.music.load(str(get_asset("sounds", "music.ogg")))
                 pygame.mixer.music.play(-1)  # -1 = loop infinito
+                os.chdir(self.working_directory)
         else:
             self.screen.blit(self._background,self._background_rect)
             self.game_list.render()
@@ -109,7 +112,8 @@ class ArcadeEngine:
             self._muted = False
             pygame.mixer.music.set_volume(1)
             pygame.mixer.set_num_channels(8)
-        (game_class, game_metadata) = self.games.entries[index]
+        (game_class, game_metadata, root_path) = self.games.loaded_entries[index]
+        os.chdir(root_path)
         self.__current_game = game_class(game_metadata)
         self.__current_game.start(self.screen)
         pygame.display.set_caption(game_metadata.title)

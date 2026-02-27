@@ -20,7 +20,7 @@ class GameList:
     def __init__(self, engine: "ArcadeEngine") -> None:
         self.font_meta = pygame.font.SysFont(pygame.font.get_default_font(), 30)
         self._engine = engine
-        self._selector = GameSelector(len(engine.games.entries))
+        self._selector = GameSelector(len(engine.games.loaded_entries))
 
         self._button_normal = pygame.image.load(str(get_asset("images","button_normal.png"))).convert_alpha()
         self._button_hover = pygame.image.load(str(get_asset("images","button_hover.png"))).convert_alpha()
@@ -44,7 +44,7 @@ class GameList:
 
         btn_w   = self._button_normal.get_width()
         sel_abs = self._selector.selected_index
-        title   = self._engine.games.entries[sel_abs][1].title
+        title   = self._engine.games.loaded_entries[sel_abs][1].title
         label_w = self._engine.font_arcade.size(title)[0]
 
         center = (btn_w - label_w) // 2
@@ -103,7 +103,9 @@ class GameList:
                     self._engine.screen.blit(label, (x + center + int(self._marquee_offset), label_y))
                     self._engine.screen.set_clip(None)
                 else:
+                    self._engine.screen.set_clip(pygame.Rect(x + 10, y, btn_w - 20, btn_h))
                     self._engine.screen.blit(label, (x + center, label_y))
+                    self._engine.screen.set_clip(None)
 
     def _render_panel(self) -> None:
         surfs  = self._panel_surfs[self._selector.selected_index]
@@ -115,7 +117,7 @@ class GameList:
 
     def _launch_selected(self) -> None:
         idx = self._selector.selected_index
-        if idx < len(self._engine.games.entries):
+        if idx < len(self._engine.games.loaded_entries):
             pygame.mixer.music.stop()
             self._engine.run_game(idx)
 
@@ -128,7 +130,7 @@ class GameList:
             self._engine.snd_cancel.play()
 
     def _load_text_games(self) -> None:
-        for _, meta in self._engine.games.entries:
+        for _, meta, _ in self._engine.games.loaded_entries:
             title = meta.title.replace(" ", "   ").upper()
             self._labels_normal.append(self._engine.font_arcade.render(title, True, (255, 255, 255)))
             self._labels_selected.append(self._engine.font_arcade.render(title, True, (225, 168, 240)))
