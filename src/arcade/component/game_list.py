@@ -61,13 +61,13 @@ class GameList:
         for event in events:
             if event.type == pygame.KEYDOWN:
                 match event.key:
-                    case pygame.K_UP:
+                    case pygame.K_UP | pygame.K_w:
                         self._on_move(self._selector.move_up())
-                    case pygame.K_DOWN:
+                    case pygame.K_DOWN | pygame.K_s:
                         self._on_move(self._selector.move_down())
-                    case pygame.K_LEFT:
+                    case pygame.K_LEFT | pygame.K_a:
                         self._on_move(self._selector.move_left())
-                    case pygame.K_RIGHT:
+                    case pygame.K_RIGHT | pygame.K_d:
                         self._on_move(self._selector.move_right())
                     case pygame.K_RETURN | pygame.K_SPACE:
                         self._engine.snd_select_game.play()
