@@ -69,7 +69,7 @@ class GameList:
                         self._on_move(self._selector.move_left())
                     case pygame.K_RIGHT:
                         self._on_move(self._selector.move_right())
-                    case pygame.K_KP_ENTER | pygame.K_SPACE:
+                    case pygame.K_RETURN | pygame.K_SPACE:
                         self._engine.snd_select_game.play()
                         self._launch_selected()
 
