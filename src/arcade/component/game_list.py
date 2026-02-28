@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from .game_selector import GameSelector
 from ..util.paths import get_asset
 from enum import Enum
+from .progress_bar import ProgressBar
 
 # Esto es para evitar la dependencia circular
 if TYPE_CHECKING:
@@ -43,28 +44,35 @@ class GameList:
         self._marquee_offset = 0.0   # posición X actual del scroll
         self._marquee_speed  = 90    # píxeles por segundo
         self._timer_scroll = 0.0     # Timer para el tiempo tarda en empezar a moverse al seleccionar
+        self.progress_bar = ProgressBar(self._engine)
 
     def update(self, dt: float) -> None:
-        self._timer_scroll += dt
-        if self._timer_scroll < _SCROLL_DELAY:
-            return
+        if self.progress_bar.shown:
+            self.progress_bar.update(dt)
+        else:
+            self._timer_scroll += dt
+            if self._timer_scroll < _SCROLL_DELAY:
+                return
 
-        self._marquee_offset += self._marquee_speed * dt
+            self._marquee_offset += self._marquee_speed * dt
 
-        btn_w   = self._button_normal.get_width()
-        sel_abs = self._selector.selected_index
-        title   = self._engine.games.loaded_entries[sel_abs][1].title
-        label_w = self._engine.font_arcade.size(title)[0]
+            btn_w   = self._button_normal.get_width()
+            sel_abs = self._selector.selected_index
+            title   = self._engine.games.loaded_entries[sel_abs][1].title
+            label_w = self._engine.font_arcade.size(title)[0]
 
-        center = (btn_w - label_w) // 2
+            center = (btn_w - label_w) // 2
 
-        # Cuando sale por la derecha, reaparece desde la izquierda
-        if center + self._marquee_offset >= btn_w:
-            self._marquee_offset = -label_w - center
+            # Cuando sale por la derecha, reaparece desde la izquierda
+            if center + self._marquee_offset >= btn_w:
+                self._marquee_offset = -label_w - center
 
     def render(self) -> None:
-        self._render_panel()
-        self._render_buttons()
+        if self.progress_bar.shown:
+            self.progress_bar.render()
+        else:
+            self._render_panel()
+            self._render_buttons()
         
     def handle_events(self, events: list[pygame.event.Event]) -> None:
         for event in events:
@@ -136,7 +144,8 @@ class GameList:
         idx = self._selector.selected_index
         if idx < len(self._engine.games.loaded_entries):
             pygame.mixer.music.stop()
-            self._engine.run_game(idx)
+            self.progress_bar.shown = True
+            self.progress_bar.target_game = idx
 
     def _on_move(self, moved: bool) -> None:
         if moved:

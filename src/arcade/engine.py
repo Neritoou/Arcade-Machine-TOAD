@@ -71,6 +71,8 @@ class ArcadeEngine:
         if self.__current_game:
             self.__current_game.handle_events(events)
         else:
+            if self.game_list.progress_bar.shown:
+                return
             self.game_list.handle_events(events)
             for event in events:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
@@ -89,18 +91,21 @@ class ArcadeEngine:
         if self.__current_game:
             if self.__current_game.running:
                 self.__current_game.render()
+                return
             else:
+                self.game_list.progress_bar.reset()
                 pygame.display.set_caption(self.launcher_title)
                 self.__current_game = None
                 pygame.mixer.music.load(str(get_asset("sounds", "music.ogg")))
                 pygame.mixer.music.play(-1)  # -1 = loop infinito
                 os.chdir(self.working_directory)
-        else:
-            self.screen.blit(self._background,self._background_rect)
-            self.game_list.render()
+
+        self.screen.blit(self._background, self._background_rect)
+        self.game_list.render()
+
+        if not self.game_list.progress_bar.shown:
             mute_img = self._button_unmute if self._muted else self._button_mute
             self.screen.blit(mute_img, self._button_mute_rect)
-
 
     def stop(self) -> None:
         self.__running = False
