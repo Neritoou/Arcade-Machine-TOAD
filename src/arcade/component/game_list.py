@@ -2,6 +2,7 @@ import pygame
 from typing import TYPE_CHECKING
 from .game_selector import GameSelector
 from ..util.paths import get_asset
+from enum import Enum
 
 # Esto es para evitar la dependencia circular
 if TYPE_CHECKING:
@@ -12,9 +13,17 @@ _MARGIN_X = 20
 _MARGIN_Y = 15
 _START_X  = 354
 _START_Y  = 305
-_PANEL_X = 57
-_PANEL_Y = 550
+_PANEL_START_X = 35
+_PANEL_WIDTH = 255
+_PANEL_START_Y = 512
+_PANEL_LINE_X_MARGIN = 15
+_PANEL_LINE_Y_MARGIN = 9
+_PANEL_HEIGHT = 164
 _SCROLL_DELAY= 0.4
+
+class TextAlignment(Enum):
+    LEFT = 0
+    CENTER = 1
 
 class GameList:
     def __init__(self, engine: "ArcadeEngine") -> None:
@@ -28,8 +37,8 @@ class GameList:
         self._label_unassigned = self._engine.font_arcade.render("UNASSIGNED", True, (100, 100, 100))
         self._labels_normal:   list[pygame.Surface] = []
         self._labels_selected: list[pygame.Surface] = []
-        self._panel_surfs: list[list[pygame.Surface]] = []
-        self._load_text_games()
+        self._panel_surfs: list[list[tuple[pygame.Surface, TextAlignment]]] = []
+        self._load_game_text()
         
         self._marquee_offset = 0.0   # posición X actual del scroll
         self._marquee_speed  = 90    # píxeles por segundo
@@ -72,6 +81,8 @@ class GameList:
                     case pygame.K_RETURN | pygame.K_SPACE:
                         self._engine.snd_select_game.play()
                         self._launch_selected()
+                    case _:
+                        pass
 
     def _render_buttons(self):
         btn_w, btn_h = self._button_normal.get_size()
@@ -108,12 +119,18 @@ class GameList:
                     self._engine.screen.set_clip(None)
 
     def _render_panel(self) -> None:
-        surfs  = self._panel_surfs[self._selector.selected_index]
-        height = self._engine.font_meta.get_height()
-        y      = _PANEL_Y
-        for surf in surfs:
-            self._engine.screen.blit(surf, (_PANEL_X, y))
-            y += height + 10
+        surfs = self._panel_surfs[self._selector.selected_index]    
+        combined_height = sum(surf[0].get_height() for surf in surfs) + ((len(surfs) - 1) * _PANEL_LINE_Y_MARGIN)
+        y = _PANEL_START_Y + (_PANEL_HEIGHT - combined_height) // 2 
+        for surf, alignment in surfs:
+            self._engine.screen.blit(
+                surf,
+                (
+                    _PANEL_START_X + _PANEL_LINE_X_MARGIN if alignment == TextAlignment.LEFT else _PANEL_START_X + (_PANEL_WIDTH - surf.get_width()) // 2,
+                    y
+                )
+            )
+            y += surf.get_height() + _PANEL_LINE_Y_MARGIN
 
     def _launch_selected(self) -> None:
         idx = self._selector.selected_index
@@ -129,17 +146,20 @@ class GameList:
         else:
             self._engine.snd_cancel.play()
 
-    def _load_text_games(self) -> None:
+    def _render_panel_text(self, text: str) -> pygame.Surface:
+        return self._engine.font_meta.render(text, True, (255, 255, 255))
+
+    def _load_game_text(self) -> None:
         for _, meta, _ in self._engine.games.loaded_entries:
             title = meta.title.replace(" ", "   ").upper()
             self._labels_normal.append(self._engine.font_arcade.render(title, True, (255, 255, 255)))
             self._labels_selected.append(self._engine.font_arcade.render(title, True, (225, 168, 240)))
-            lines = [
-                f"Grupo: {meta.group_number}",
-                "Integrantes:",
-                *[f"    - {author}" for author in meta.authors]
-            ]
-            self._panel_surfs.append([
-                self._engine.font_meta.render(line, True, (255, 255, 255))
-                for line in lines
+            
+            game_panel_lines: list[tuple[pygame.Surface, TextAlignment]] = []
+            game_panel_lines.extend([
+                (self._render_panel_text(f"Group #{meta.group_number}"), TextAlignment.CENTER),
+                (self._render_panel_text("Members:"), TextAlignment.LEFT)
             ])
+            for author in meta.authors:
+                game_panel_lines.append((self._render_panel_text(f"- {author}"), TextAlignment.LEFT))
+            self._panel_surfs.append(game_panel_lines)

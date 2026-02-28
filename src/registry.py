@@ -84,7 +84,6 @@ class GameRegistry:
 
     # Método para cargar un módulo genérico
     def __load_generic_module(self, module_name: str, module_file_path: str, root_path: str) -> ModuleType | None:
-        print(root_path)
         if root_path not in sys.path:
             sys.path.insert(0, root_path)
 
@@ -112,7 +111,6 @@ class GameRegistry:
     def __load_game_module(self, module_name: str, module_file_path: str, field: str, root_path: str) -> type[GameBase]:
         os.chdir(root_path)
         module = self.__load_generic_module(module_name, module_file_path, root_path)
-        print(module)
         game_class = getattr(module, field)
         if not issubclass(game_class, GameBase):
             raise TypeError(f"Miembro \"{field}\" exportado no es hijo de la clase \"GameBase\"")
@@ -122,7 +120,6 @@ class GameRegistry:
     def __load_game_meta(self, module_name: str, module_file_path: str, field: str, root_path: str) -> GameMeta:
         os.chdir(root_path)
         module = self.__load_generic_module(module_name, module_file_path, root_path)
-        print(module)
         metadata = getattr(module, field)
         if not isinstance(metadata, GameMeta):
             raise TypeError(f"Miembro \"{field}\" exportado no es una instancia de \"GameMeta\"")
