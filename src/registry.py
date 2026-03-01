@@ -32,7 +32,7 @@ class GameRegistry:
         self._register("tetris", "main.py", "metadata", "src/core/game.py", "Game", None, "Monday") # 1
         self._register("pacman", "Proyecto-PacMan-master/main.py", "metadata", "Proyecto-PacMan-master/game.py", "Game", None, "Monday") # 2
         self._register("street-fighter", "src/main.py", "metadata", "src/main.py", "StreetFighterGame", "src", "Monday") # 3
-        self._register("tron", "main.py", "metadata", "tron_game/game.py", "TronGame", None, "Monday") # 4
+        self._register("tron", "game.py", "metadata", "game.py", "TronGame", None, "Monday") # 4
         self._register("snake", "main.py", "game_meta", "game.py", "SnakeGame", None, "Monday") # 5
         self._register("bomberman", "main.py", "metadata", "src/core/bomberman_game.py", "BombermanGame", "src", "Monday") # 7
         self._register("space-invaders", "main.py", "metadata", "src/game.py", "Game", None, "Monday") # 8
