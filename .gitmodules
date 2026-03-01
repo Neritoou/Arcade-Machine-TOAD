@@ -1,0 +1,33 @@
+[submodule "games/tron"]
+	path = games/tron
+	url = https://github.com/rTrev6/Tron-Light-Cycles-modulo-4
+[submodule "games/snake"]
+	path = games/snake
+	url = https://github.com/Chris15-10/Serpiente-
+[submodule "games/bomberman"]
+	path = games/bomberman
+	url = https://github.com/katex009/bomberman
+[submodule "games/space-invaders"]
+	path = games/space-invaders
+	url = https://github.com/alecsoc/space-invaders-toad-edition
+[submodule "games/centipede"]
+	path = games/centipede
+	url = https://github.com/JZORs/Centipede
+[submodule "donkey-kong"]
+	path = donkey-kong
+	url = https://github.com/DiGiorgio-L/Donkey-Kong-modulo-1-TOAD-Jueves-
+[submodule "galaga"]
+	path = galaga
+	url = https://github.com/Dano-jp/Galaga
+[submodule "games/donkey-kong"]
+	path = games/donkey-kong
+	url = https://github.com/DiGiorgio-L/Donkey-Kong-modulo-1-TOAD-Jueves-
+[submodule "games/galaga"]
+	path = games/galaga
+	url = https://github.com/Dano-jp/Galaga
+[submodule "games/mario-bros"]
+	path = games/mario-bros
+	url = https://github.com/erocxs/Mario-Bros-TOAD
+[submodule "games/frogger"]
+	path = games/frogger
+	url = https://github.com/Juqn21/frogger
