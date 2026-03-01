@@ -117,8 +117,8 @@ class ArcadeEngine:
             self._muted = False
             pygame.mixer.music.set_volume(1)
             pygame.mixer.set_num_channels(8)
-        (game_class, game_metadata, root_path) = self.games.loaded_entries[index]
-        os.chdir(root_path)
+        (game_class, game_metadata, entry) = self.games.loaded_entries[index]
+        os.chdir(entry.full_root_path)
         self.__current_game = game_class(game_metadata)
         self.__current_game.start(self.screen)
         pygame.display.set_caption(game_metadata.title)

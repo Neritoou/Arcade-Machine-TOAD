@@ -206,5 +206,8 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+# Games directly cloned for testing
+game_testing
+
 # Unignore later
 games

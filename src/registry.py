@@ -4,30 +4,53 @@ import sys
 from arcade_machine_sdk import GameBase, GameMeta
 from types import ModuleType
 from dataclasses import dataclass
+from meta import meta_replacements
 
 GAMES_DIRECTORY = os.path.normpath(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "games"))
 
 @dataclass
 class GameEntry:
+    sort_order: int
     metadata_path: str
     metadata_field: str
     game_path: str
     game_field: str
-    root_subdir: str = ""
+    root_subdir: str | None = ""
+    # Hardcodeado aquí porque olvidé colocar esta field en el GameMeta :(
+    group_day: str = ""
+
+@dataclass
+class LoadedGameEntry:
+    raw_entry: GameEntry
+    full_root_path: str
+
 
 class GameRegistry:
     def __init__(self) -> None:
-        self.entries = {
-            "centipede": GameEntry("Main.py", "metadata", "Game.py", "Game"),
-            "donkey-kong": GameEntry("main.py", "metadata", "game/game.py", "DonkeyKong"),
-            "frogger": GameEntry("main.py", "metadata", "engine.py", "Game"),
-            "galaga": GameEntry("main.py", "metadata", "game.py", "GalagaGame"),
-            "space-invaders": GameEntry("main.py", "metadata", "src/game.py", "Game"),
-            "street-fighter": GameEntry("src/main.py", "metadata", "src/main.py", "StreetFighterGame", "src"), # modified to work
-            "tetris": GameEntry("main.py", "metadata", "src/core/game.py", "Game"),
-            "tron": GameEntry("main.py", "metadata", "tron_game/game.py", "TronGame"),
-        }
-        self.loaded_entries: list[tuple[type[GameBase], GameMeta, str]] = []
+        self.entries: dict[str, GameEntry] = {}
+
+        self._register("tetris", "main.py", "metadata", "src/core/game.py", "Game", None, "Monday") # 1
+        self._register("pacman", "Proyecto-PacMan-master/main.py", "metadata", "Proyecto-PacMan-master/game.py", "Game", None, "Monday") # 2
+        self._register("street-fighter", "src/main.py", "metadata", "src/main.py", "StreetFighterGame", "src", "Monday") # 3
+        self._register("tron", "main.py", "metadata", "tron_game/game.py", "TronGame", None, "Monday") # 4
+        self._register("snake", "main.py", "game_meta", "game.py", "SnakeGame", None, "Monday") # 5
+        self._register("bomberman", "main.py", "metadata", "src/core/bomberman_game.py", "BombermanGame", "src", "Monday") # 7
+        self._register("space-invaders", "main.py", "metadata", "src/game.py", "Game", None, "Monday") # 8
+        self._register("centipede", "Main.py", "metadata", "Game.py", "Game", None, "Monday") # 9
+
+        self._register("donkey-kong", "main.py", "metadata", "game/game.py", "DonkeyKong", None, "Thursday") # 1
+        self._register("galaga", "main.py", "metadata", "game.py", "GalagaGame", None, "Thursday") # 3
+        self._register("jumper", "jumper 2.0.py", "meta", "jumper 2.0.py", "JumperGame", None, "Thursday") # 4
+        self._register("flappy-bird", "main.py", "metadata", "game.py", "FlyingDuckGame", None, "Thursday") # 6
+        self._register("mario-bros", "main.py", "metadata", "mario_game.py", "Game", None, "Thursday") # 8
+        self._register("frogger", "main.py", "metadata", "engine.py", "Game", None, "Thursday") # 9
+
+        self.loaded_entries: list[tuple[type[GameBase], GameMeta, LoadedGameEntry]] = []
+
+    def _register(self, game_name: str, metadata_path: str, metadata_field: str, game_path: str, game_field: str, root_subdir: str | None = "", group_day: str = ""):
+        sort_order = len(self.entries)
+        entry = GameEntry(sort_order, metadata_path, metadata_field, game_path, game_field, root_subdir, group_day)
+        self.entries[game_name] = entry
 
     # Cargar todos los juegos de manera dinámica
     def perform_scan(self) -> None:
@@ -67,7 +90,7 @@ class GameRegistry:
                 continue
 
             try:
-                game_metadata = self.__load_game_meta(
+                game_metadata = meta_replacements[directory] if directory in meta_replacements else self.__load_game_meta(
                     f"game_metadata_{directory}",
                     os.path.join(GAMES_DIRECTORY, directory, os.path.normpath(entry.metadata_path)),
                     entry.metadata_field,
@@ -77,7 +100,7 @@ class GameRegistry:
                 print(f"(Error - {current_index}/{games_to_load}) No se pudieron cargar los metadatos del juego de: {directory} -> {ex}")
                 continue
 
-            self.loaded_entries.append((game_class, game_metadata, root_path))
+            self.loaded_entries.append((game_class, game_metadata, LoadedGameEntry(entry, root_path)))
             print(f"(OK - {current_index}/{games_to_load}) Juego cargado satisfactoriamente: {game_metadata.title} de {", ".join(game_metadata.authors)}")
 
         os.chdir(working_directory)

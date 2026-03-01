@@ -18,6 +18,7 @@ _PANEL_START_X = 35
 _PANEL_WIDTH = 255
 _PANEL_START_Y = 512
 _PANEL_LINE_X_MARGIN = 15
+_PANEL_TITLE_Y_MARGIN = 20
 _PANEL_LINE_Y_MARGIN = 9
 _PANEL_HEIGHT = 164
 _SCROLL_DELAY= 0.4
@@ -128,9 +129,9 @@ class GameList:
 
     def _render_panel(self) -> None:
         surfs = self._panel_surfs[self._selector.selected_index]    
-        combined_height = sum(surf[0].get_height() for surf in surfs) + ((len(surfs) - 1) * _PANEL_LINE_Y_MARGIN)
+        combined_height = sum(surf[0].get_height() for surf in surfs) + ((len(surfs) - 2) * _PANEL_LINE_Y_MARGIN) + _PANEL_TITLE_Y_MARGIN
         y = _PANEL_START_Y + (_PANEL_HEIGHT - combined_height) // 2 
-        for surf, alignment in surfs:
+        for index, (surf, alignment) in enumerate(surfs):
             self._engine.screen.blit(
                 surf,
                 (
@@ -138,7 +139,7 @@ class GameList:
                     y
                 )
             )
-            y += surf.get_height() + _PANEL_LINE_Y_MARGIN
+            y += surf.get_height() + (_PANEL_TITLE_Y_MARGIN if index == 0 else _PANEL_LINE_Y_MARGIN)
 
     def _launch_selected(self) -> None:
         idx = self._selector.selected_index
@@ -159,14 +160,14 @@ class GameList:
         return self._engine.font_meta.render(text, True, (255, 255, 255))
 
     def _load_game_text(self) -> None:
-        for _, meta, _ in self._engine.games.loaded_entries:
+        for _, meta, entry in self._engine.games.loaded_entries:
             title = meta.title.replace(" ", "   ").upper()
             self._labels_normal.append(self._engine.font_arcade.render(title, True, (255, 255, 255)))
             self._labels_selected.append(self._engine.font_arcade.render(title, True, (225, 168, 240)))
             
             game_panel_lines: list[tuple[pygame.Surface, TextAlignment]] = []
             game_panel_lines.extend([
-                (self._render_panel_text(f"Group #{meta.group_number}"), TextAlignment.CENTER),
+                (self._render_panel_text(f"Group #{meta.group_number} - " + entry.raw_entry.group_day), TextAlignment.CENTER),
                 (self._render_panel_text("Members:"), TextAlignment.LEFT)
             ])
             for author in meta.authors:
