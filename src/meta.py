@@ -4,16 +4,6 @@ from arcade_machine_sdk import GameMeta
 
 meta_replacements: dict[str, GameMeta] = {}
 
-meta_replacements["pacman"] = (GameMeta()
-                               .with_title("Pac Man")
-                               .with_description("Esquiva a los fantasmas, come todas las esferas y domina el laberinto en esta recreación fiel del arcade original. ")
-                               .with_release_date("02/03/2026")
-                               .with_group_number(2)
-                               .add_tag("Retro")
-                               .add_tag("Laberinto")
-                               .add_author("Isabela Paraqueimo")
-                               .add_author("Cesar Moya"))
-
 meta_replacements["street-fighter"] = (GameMeta()
                                        .with_title("Street Fighter 2")
                                        .with_description("Clásico juego de pelea arcade")
