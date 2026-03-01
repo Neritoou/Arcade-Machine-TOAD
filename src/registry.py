@@ -21,6 +21,7 @@ class GameEntry:
 
 @dataclass
 class LoadedGameEntry:
+    name: str
     raw_entry: GameEntry
     full_root_path: str
 
@@ -100,7 +101,7 @@ class GameRegistry:
                 print(f"(Error - {current_index}/{games_to_load}) No se pudieron cargar los metadatos del juego de: {directory} -> {ex}")
                 continue
 
-            self.loaded_entries.append((game_class, game_metadata, LoadedGameEntry(entry, root_path)))
+            self.loaded_entries.append((game_class, game_metadata, LoadedGameEntry(directory, entry, root_path)))
             print(f"(OK - {current_index}/{games_to_load}) Juego cargado satisfactoriamente: {game_metadata.title} de {", ".join(game_metadata.authors)}")
 
         self.loaded_entries.sort(key=lambda x: x[2].raw_entry.sort_order)

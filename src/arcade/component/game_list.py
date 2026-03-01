@@ -1,7 +1,7 @@
 import pygame
 from typing import TYPE_CHECKING
 from .game_selector import GameSelector
-from ..util.paths import get_asset
+from ..util.paths import get_asset, ASSETS_ROOT
 from enum import Enum
 from .progress_bar import ProgressBar
 
@@ -22,6 +22,13 @@ _PANEL_TITLE_Y_MARGIN = 20
 _PANEL_LINE_Y_MARGIN = 9
 _PANEL_HEIGHT = 164
 _SCROLL_DELAY= 0.4
+_GAME_LOGO_POS = (53, 237)
+_GAME_TITLE_START_X = 18
+_GAME_TITLE_SPACE_X = 287
+_GAME_TITLE_START_Y_SINGLE_LINE = 447
+_GAME_TITLE_START_Y_TWO_LINES = 438
+_GAME_TITLE_STEP_Y = 20
+_MAX_TITLE_LINE_WIDTH = 270
 
 class TextAlignment(Enum):
     LEFT = 0
@@ -40,8 +47,13 @@ class GameList:
         self._labels_normal:   list[pygame.Surface] = []
         self._labels_selected: list[pygame.Surface] = []
         self._panel_surfs: list[list[tuple[pygame.Surface, TextAlignment]]] = []
+        self._game_title_font = pygame.font.Font(str(get_asset("fonts","arcade.ttf")), 30)
+        self._panel_titles: list[list[pygame.Surface]] = []
         self._load_game_text()
-        
+        self._placeholder_logo_surf = pygame.image.load(str(get_asset("images", "logos", "placeholder.png")))
+        self._logos_surfs: list[pygame.Surface] = []
+        self._load_game_logos()
+
         self._marquee_offset = 0.0   # posición X actual del scroll
         self._marquee_speed  = 90    # píxeles por segundo
         self._timer_scroll = 0.0     # Timer para el tiempo tarda en empezar a moverse al seleccionar
@@ -128,6 +140,16 @@ class GameList:
                     self._engine.screen.set_clip(None)
 
     def _render_panel(self) -> None:
+        logo = self._logos_surfs[self._selector.selected_index]
+        self._engine.screen.blit(logo, _GAME_LOGO_POS)
+
+        title_lines: list[pygame.Surface] = self._panel_titles[self._selector.selected_index]
+        x = _GAME_TITLE_START_X
+        y = _GAME_TITLE_START_Y_SINGLE_LINE if len(title_lines) == 1 else _GAME_TITLE_START_Y_TWO_LINES
+        for line in title_lines:
+            y += _GAME_TITLE_STEP_Y
+            self._engine.screen.blit(line, (x + (_GAME_TITLE_SPACE_X - line.get_width()) // 2, y))
+
         surfs = self._panel_surfs[self._selector.selected_index]    
         combined_height = sum(surf[0].get_height() for surf in surfs) + ((len(surfs) - 2) * _PANEL_LINE_Y_MARGIN) + _PANEL_TITLE_Y_MARGIN
         y = _PANEL_START_Y + (_PANEL_HEIGHT - combined_height) // 2 
@@ -173,3 +195,32 @@ class GameList:
             for author in meta.authors:
                 game_panel_lines.append((self._render_panel_text(f"- {author}"), TextAlignment.LEFT))
             self._panel_surfs.append(game_panel_lines)
+
+            game_title_lines: list[pygame.Surface] = []
+            title_words = meta.title.split()
+            current_line = ""
+            for word in title_words:
+                test_line = word if current_line == "" else current_line + "  " + word
+                text_width, _ = self._game_title_font.size(test_line)
+
+                if text_width <= _MAX_TITLE_LINE_WIDTH:
+                    current_line = test_line
+                else:
+                    game_title_lines.append(
+                        self._game_title_font.render(current_line, True, (255, 255, 255))
+                    )
+                    current_line = word
+            if current_line:
+                game_title_lines.append(
+                    self._game_title_font.render(current_line, True, (255, 255, 255))
+                )
+           
+            self._panel_titles.append(game_title_lines)     
+
+    def _load_game_logos(self) -> None:
+        for _, _, entry in self._engine.games.loaded_entries:
+            logo_path = ASSETS_ROOT.joinpath("images", "logos", entry.name + ".png")
+            if logo_path.is_file():
+                self._logos_surfs.append(pygame.image.load(str(logo_path)))
+            else:
+                self._logos_surfs.append(self._placeholder_logo_surf)
