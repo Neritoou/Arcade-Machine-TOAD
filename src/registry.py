@@ -31,7 +31,7 @@ class GameRegistry:
         self.entries: dict[str, GameEntry] = {}
 
         self._register("tetris", "main.py", "metadata", "src/core/game.py", "Game", None, "Monday") # 1
-        self._register("pacman", "Proyecto-PacMan-master/main.py", "metadata", "Proyecto-PacMan-master/game.py", "Game", None, "Monday") # 2
+        self._register("pacman", "main.py", "metadata", "game.py", "Game", None, "Monday") # 2
         self._register("street-fighter", "src/main.py", "metadata", "src/main.py", "StreetFighterGame", "src", "Monday") # 3
         self._register("tron", "game.py", "metadata", "game.py", "TronGame", None, "Monday") # 4
         self._register("snake", "main.py", "game_meta", "game.py", "SnakeGame", None, "Monday") # 5
