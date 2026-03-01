@@ -103,7 +103,7 @@ class GameRegistry:
             self.loaded_entries.append((game_class, game_metadata, LoadedGameEntry(entry, root_path)))
             print(f"(OK - {current_index}/{games_to_load}) Juego cargado satisfactoriamente: {game_metadata.title} de {", ".join(game_metadata.authors)}")
 
-        # self.loaded_entries.sort(key=lambda x: x[2].raw_entry.sort_order)
+        self.loaded_entries.sort(key=lambda x: x[2].raw_entry.sort_order)
         os.chdir(working_directory)
 
     # Método para cargar un módulo genérico
