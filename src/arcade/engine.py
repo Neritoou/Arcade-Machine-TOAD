@@ -3,9 +3,11 @@ from registry import GameRegistry
 from arcade_machine_sdk import BASE_RESOLUTION, DEFAULT_FPS, GameBase
 from .util.paths import get_asset
 import pygame
+import os
 
 class ArcadeEngine:
     def __init__(self, launcher_title: str, game_registry: GameRegistry) -> None:
+        self.working_directory = os.getcwd()
         self.games = game_registry
         self.launcher_title = launcher_title
         self.__running = True
@@ -34,6 +36,7 @@ class ArcadeEngine:
         self.game_list = GameList(self)
 
         pygame.mixer.music.load(str(get_asset("sounds", "music.ogg")))
+        pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(-1)  # -1 = loop infinito
 
     def run(self):
@@ -69,6 +72,8 @@ class ArcadeEngine:
         if self.__current_game:
             self.__current_game.handle_events(events)
         else:
+            if self.game_list.progress_bar.shown:
+                return
             self.game_list.handle_events(events)
             for event in events:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
@@ -87,17 +92,22 @@ class ArcadeEngine:
         if self.__current_game:
             if self.__current_game.running:
                 self.__current_game.render()
+                return
             else:
+                self.game_list.progress_bar.reset()
                 pygame.display.set_caption(self.launcher_title)
                 self.__current_game = None
                 pygame.mixer.music.load(str(get_asset("sounds", "music.ogg")))
                 pygame.mixer.music.play(-1)  # -1 = loop infinito
-        else:
-            self.screen.blit(self._background,self._background_rect)
-            self.game_list.render()
+                pygame.mixer.music.set_volume(1.0)
+                os.chdir(self.working_directory)
+
+        self.screen.blit(self._background, self._background_rect)
+        self.game_list.render()
+
+        if not self.game_list.progress_bar.shown:
             mute_img = self._button_unmute if self._muted else self._button_mute
             self.screen.blit(mute_img, self._button_mute_rect)
-
 
     def stop(self) -> None:
         self.__running = False
@@ -109,7 +119,8 @@ class ArcadeEngine:
             self._muted = False
             pygame.mixer.music.set_volume(1)
             pygame.mixer.set_num_channels(8)
-        (game_class, game_metadata) = self.games.entries[index]
+        (game_class, game_metadata, entry) = self.games.loaded_entries[index]
+        os.chdir(entry.full_root_path)
         self.__current_game = game_class(game_metadata)
         self.__current_game.start(self.screen)
         pygame.display.set_caption(game_metadata.title)
