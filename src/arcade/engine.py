@@ -36,6 +36,7 @@ class ArcadeEngine:
         self.game_list = GameList(self)
 
         pygame.mixer.music.load(str(get_asset("sounds", "music.ogg")))
+        pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(-1)  # -1 = loop infinito
 
     def run(self):
@@ -98,6 +99,7 @@ class ArcadeEngine:
                 self.__current_game = None
                 pygame.mixer.music.load(str(get_asset("sounds", "music.ogg")))
                 pygame.mixer.music.play(-1)  # -1 = loop infinito
+                pygame.mixer.music.set_volume(1.0)
                 os.chdir(self.working_directory)
 
         self.screen.blit(self._background, self._background_rect)
