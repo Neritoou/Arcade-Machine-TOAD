@@ -71,6 +71,9 @@ class ArcadeEngine:
     def handle_events(self, events: list[pygame.event.Event]) -> None:
         if self.__current_game:
             self.__current_game.handle_events(events)
+            for event in events:
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_F12:
+                    self.__current_game.stop()
         else:
             if self.game_list.progress_bar.shown:
                 return
