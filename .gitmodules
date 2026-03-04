@@ -34,3 +34,15 @@
 [submodule "games/arkanoid"]
 	path = games/arkanoid
 	url = https://github.com/cesarodriguez322-arch/Arkanoid.git
+[submodule "games/pacman"]
+	path = games/pacman
+	url = https://github.com/CesarMoya27/Proyecto-PacMan.git
+[submodule "games/duck-hunt"]
+	path = games/duck-hunt
+	url = https://github.com/Gabriel66-ux/Duck-Hunt
+[submodule "games/tetris"]
+	path = games/tetris
+	url = https://github.com/Neritoou/Tetris.git
+[submodule "games/jumper"]
+	path = games/jumper
+	url = https://github.com/V1ct0r0c/JUMPER-dino
