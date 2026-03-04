@@ -35,13 +35,15 @@ class GameRegistry:
         self._register("street-fighter", "src/main.py", "metadata", "src/main.py", "StreetFighterGame", "src", "Monday") # 3
         self._register("tron", "game.py", "metadata", "game.py", "TronGame", None, "Monday") # 4
         self._register("snake", "main.py", "game_meta", "game.py", "SnakeGame", None, "Monday") # 5
+        self._register("duck-hunt", "src/main.py", "meta", "src/main.py", "DuckHuntGame", "src", "Monday") # 6
         self._register("bomberman", "main.py", "metadata", "src/core/bomberman_game.py", "BombermanGame", "src", "Monday") # 7
         self._register("space-invaders", "main.py", "metadata", "src/game.py", "Game", None, "Monday") # 8
         self._register("centipede", "Main.py", "metadata", "Game.py", "Game", None, "Monday") # 9
 
         self._register("donkey-kong", "main.py", "metadata", "game/game.py", "DonkeyKong", None, "Thursday") # 1
         self._register("galaga", "main.py", "metadata", "game.py", "GalagaGame", None, "Thursday") # 3
-        self._register("jumper", "jumper 2.0.py", "meta", "jumper 2.0.py", "JumperGame", None, "Thursday") # 4
+        self._register("jumper", "Jumper/main.py", "metadata", "Jumper/jumper.py", "Jumper", "Jumper", "Thursday") # 4
+        self._register("arkanoid", "main.py", "metadata", "src/arkanoid/game.py", "ArkanoidGame", None, "Thursday") # 5
         self._register("flappy-bird", "main.py", "metadata", "game.py", "FlyingDuckGame", None, "Thursday") # 6
         self._register("mario-bros", "main.py", "metadata", "mario_game.py", "Game", None, "Thursday") # 8
         self._register("frogger", "main.py", "metadata", "engine.py", "Game", None, "Thursday") # 9
