@@ -31,6 +31,6 @@
 [submodule "games/street-fighter"]
 	path = games/street-fighter
 	url = https://github.com/kems0712/street_fighter_arcade
-[submodule "games/pacman"]
-	path = games/pacman
-	url = https://github.com/CesarMoya27/Proyecto-PacMan.git
+[submodule "games/arkanoid"]
+	path = games/arkanoid
+	url = https://github.com/cesarodriguez322-arch/Arkanoid.git
