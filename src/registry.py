@@ -45,6 +45,7 @@ class GameRegistry:
         self._register("jumper", "Jumper/main.py", "metadata", "Jumper/jumper.py", "Jumper", "Jumper", "Thursday") # 4
         self._register("arkanoid", "main.py", "metadata", "src/arkanoid/game.py", "ArkanoidGame", None, "Thursday") # 5
         self._register("flappy-bird", "main.py", "metadata", "game.py", "FlyingDuckGame", None, "Thursday") # 6
+        self._register("breakout", "Breakout--master/main.py", "metadata", "Breakout--master/main.py", "BreakoutGame", "Breakout--master", "Thursday") # 6
         self._register("mario-bros", "main.py", "metadata", "mario_game.py", "Game", None, "Thursday") # 8
         self._register("frogger", "main.py", "metadata", "engine.py", "Game", None, "Thursday") # 9
 

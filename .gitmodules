@@ -46,3 +46,7 @@
 [submodule "games/jumper"]
 	path = games/jumper
 	url = https://github.com/V1ct0r0c/JUMPER-dino
+[submodule "games/breakout"]
+	path = games/breakout
+	url = https://github.com/isaacj810/Breakout-
+	branch = main
